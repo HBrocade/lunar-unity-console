@@ -1,4 +1,5 @@
 require_relative 'common.rb'
+require_relative 'platform'
 
 include Common
 
@@ -26,7 +27,7 @@ class UnityProject
 
     exec_shell cmd, error_message.nil? ? "Can't execute method: #{method}\nProject: #{project}" : error_message
 
-    unity_log = File.expand_path '~/Library/Logs/Unity/Editor.log'
+    unity_log = File.expand_path Platform.unity_log
     fail_script_unless_file_exists unity_log
 
     result = File.read unity_log
@@ -38,10 +39,10 @@ class UnityProject
 
   def exec_unity(project, command, error_message = nil)
     fail_script_unless_file_exists project
-    exec_shell %(#{@bin_unity} -quit -batchmode -projectPath "#{project}" #{command}),
+    exec_shell %("#{@bin_unity}" -quit -batchmode -projectPath "#{project}" #{command}),
                error_message.nil? ? "Can't execute unit command: #{command}\nProject: #{project}" : error_message
 
-    unity_log = File.expand_path '~/Library/Logs/Unity/Editor.log'
+    unity_log = File.expand_path Platform.unity_log
     fail_script_unless_file_exists unity_log
 
     result = File.read unity_log
@@ -75,7 +76,7 @@ class UnityProject
   end
 
   def open(error_message = nil)
-    exec_shell %(#{@bin_unity} -projectPath "#{@dir_project}"),
+    exec_shell %("#{@bin_unity}" -projectPath "#{@dir_project}"),
                error_message.nil? ? "Can't open Unity project: #{@dir_project}" : error_message
   end
 
